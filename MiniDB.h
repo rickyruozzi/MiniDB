@@ -37,3 +37,5 @@ void printTable(Table table);
 void dropDB(Database* db);
 void dropTable(Table* table);
 void deleteRow(Table* table, int row_id);
+void describeDB(Database *db);
+void showTable(Table *table);

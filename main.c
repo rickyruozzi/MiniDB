@@ -13,6 +13,10 @@ Database createDatabase(const char* name){
 Database createTable(Database db, const char* name){
     db.table_number++; 
     db.tables = realloc(db.tables, db.table_number * sizeof(Table)); 
+    if(db.tables == NULL){
+        fprintf(stderr, "Errore di allocazione della memoria\n");
+        exit(EXIT_FAILURE);
+    }
     Table new_table; 
     strncpy(new_table.name, name, sizeof(new_table.name)-1);
     new_table.name[sizeof(new_table.name) - 1] = '\0';
@@ -44,7 +48,7 @@ void printTable(Table table){
         printf("page: %d \nrow count: %d \n",i+1, table.pages[i].row_count);
         for(int j=0; j<table.pages[i].row_count; j++){
             Row row = table.pages[i].rows[j];
-            printf("| %d | %s | %s | %d | \n", row.id, row.name, row.email, row.age);
+            printf("| %d | %s | %s | %s | %d | \n", row.id, row.name, row.surname, row.email, row.age);
         }
     }
 }
@@ -60,26 +64,18 @@ void dropDB(Database *db){
 }
 
 void dropTable(Table* table){
-    for(int i=0; i<table->page_number; i++){
-        free(table->pages[i].rows);
-    }
     free(table->pages);
-    table->page_number=0;
+    table->page_number = 0;
     table->pages = NULL;
     printf("Tabella eliminata\n");
 }
 
 void deleteRow(Table *table, int id){
-    int num_page = id * sizeof(Row) / PAGE_SIZE; 
-    if(num_page >= table->page_number){
-        printf("ID non valido\n");
-        return;
-    }
-    Page* page = &table->pages[num_page];
-    for(int i=0; i<page->row_count; i++){
-        for(int j=0; j < page->row_count; j++){
+    for(int p = 0; p < table->page_number; p++){
+        Page* page = &table->pages[p];
+        for(int j = 0; j < page->row_count; j++){
             if(page->rows[j].id == id){
-                for(int k=j; k<page->row_count - 1; k++){
+                for(int k = j; k < page->row_count - 1; k++){
                     page->rows[k] = page->rows[k+1];
                 }
                 page->row_count--;
@@ -87,6 +83,22 @@ void deleteRow(Table *table, int id){
                 return;
             }
         }
+    }
+    printf("ID non valido\n");
+}
+
+void describeDB(Database *db){
+    for(int i=0; i<db->table_number; i++){
+        Table *t = &db->tables[i];
+        printf("Table number: %d \n", i+1);
+        printf("Table name: %s \n", t->name);
+        printf("Page number: %d \n", t->page_number);
+        int total_rows = 0;
+        for(int p = 0; p < t->page_number; p++){
+            total_rows += t->pages[p].row_count;
+        }
+        printf("Row count: %d \n", total_rows);
+        printf("Columns: id, name, surname, email, age \n");
     }
 }
 
@@ -98,5 +110,6 @@ int main(){
     insertRow(&db.tables[0], row1);
     insertRow(&db.tables[0], row2);
     printTable(db.tables[0]);
+    describeDB(&db);
     return 0;
 }

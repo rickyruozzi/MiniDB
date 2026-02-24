@@ -115,6 +115,20 @@ bool isPageFull(Page *page){
     return page->row_count = PAGE_SIZE / sizeof(Row);
 }
 
+void updateRow(Table* table, int id, Row *new_row){
+    for(int p = 0; p < table->page_number; p++){
+        Page *page = &table->pages[p];
+        for(int j=0; j<page->row_count; j++){
+            if(page->rows[j].id == id){
+                page->rows[j] = *new_row;
+                printf("Riga aggiornata\n");
+                return; //fermiamo la ricerca
+            }
+        }
+    }
+}
+
+
 int main(){
     //TESTS
     Database db = createDatabase("my_database");
@@ -126,6 +140,17 @@ int main(){
     printTable(db.tables[0]);
     describeDB(&db);
     deleteRow(&db.tables[0], 1);
+    printTable(db.tables[0]);
+    Row* new_row = (Row*)malloc(sizeof(Row));
+    new_row->id = 2; 
+    new_row->age = 32;
+    strncpy(new_row->name, "Bob", sizeof(new_row->name)-1);
+    new_row->name[sizeof(new_row->name) - 1] = '\0';
+    strncpy(new_row->surname, "Bianchi", sizeof(new_row->surname)-1);
+    new_row->surname[sizeof(new_row->surname) - 1] = '\0';
+    strncpy(new_row->email, "BobBianchi@gmail.com", sizeof(new_row->email)-1);
+    new_row->email[sizeof(new_row->email) - 1] = '\0';
+    updateRow(&db.tables[0], 2, new_row);
     printTable(db.tables[0]);
     return 0;
 }

@@ -38,6 +38,7 @@ void dropDB(Database* db);
 void dropTable(Table* table);
 void deleteRow(Table* table, int row_id);
 void describeDB(Database *db);
-void showTable(Table *table);
 bool isTableEmpty(Table *table);
 bool isPageFull(Page *page);
+void updateRow(Table* table, int id, Row* new_Row);
+void clearTable(Table* table);

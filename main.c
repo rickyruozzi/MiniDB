@@ -36,3 +36,15 @@ void insertRow(Table* table, Row row){
     current_page->rows[current_page->row_count] = row; //inserisco la riga nella pagina
     current_page->row_count++; //incremento il numero di righe nella pagina
 }
+
+void printTable(Table table){
+    printf("table name: %s", table.name);
+    printf("page number: %d", table.page_number);
+    for(int i=0; i<table.page_number; i++){
+        printf("page: %d \nrow count: %d",i+1, table.pages[i].row_count);
+        for(int j=0; j<table.pages[i].row_count; j++){
+            Row row = table.pages[i].rows[j];
+            printf("| %d | %s | %s | %d | \n", row.id, row.name, row.email, row.age);
+        }
+    }
+}

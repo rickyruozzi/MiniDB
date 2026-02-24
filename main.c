@@ -102,7 +102,21 @@ void describeDB(Database *db){
     }
 }
 
+bool isTableEmpty(Table *table){
+    for(int i=0; i<table->page_number; i++){
+        if(table->pages[i].row_count > 0){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isPageFull(Page *page){
+    return page->row_count = PAGE_SIZE / sizeof(Row);
+}
+
 int main(){
+    //TESTS
     Database db = createDatabase("my_database");
     db = createTable(db, "users");
     Row row1 = {1, "Alice", "Rossi", "AliRossi@gmail.com", 22};
@@ -111,5 +125,7 @@ int main(){
     insertRow(&db.tables[0], row2);
     printTable(db.tables[0]);
     describeDB(&db);
+    deleteRow(&db.tables[0], 1);
+    printTable(db.tables[0]);
     return 0;
 }

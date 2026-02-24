@@ -1,4 +1,4 @@
-#include <MiniDB.h> 
+#include "MiniDB.h"
 /*La funziona alloca un nuovo database, inizializzandone i parametri */
 Database createDatabase(const char* name){
     Database db; 
@@ -41,10 +41,21 @@ void printTable(Table table){
     printf("table name: %s", table.name);
     printf("page number: %d", table.page_number);
     for(int i=0; i<table.page_number; i++){
-        printf("page: %d \nrow count: %d",i+1, table.pages[i].row_count);
+        printf("page: %d \nrow count: %d \n",i+1, table.pages[i].row_count);
         for(int j=0; j<table.pages[i].row_count; j++){
             Row row = table.pages[i].rows[j];
             printf("| %d | %s | %s | %d | \n", row.id, row.name, row.email, row.age);
         }
     }
+}
+
+int main(){
+    Database db = createDatabase("my_database");
+    db = createTable(db, "users");
+    Row row1 = {1, "Alice", "Rossi", "AliRossi@gmail.com", 22};
+    Row row2 = {2, "Bob", "Bianchi", "BianchiBob@outlook.it", 31};
+    insertRow(&db.tables[0], row1);
+    insertRow(&db.tables[0], row2);
+    printTable(db.tables[0]);
+    return 0;
 }

@@ -8,6 +8,7 @@
 typedef struct Row {
     int id;
     char name[32];
+    char surname[32];
     char email[64];
     int age;
 } Row;
@@ -33,3 +34,6 @@ Database createDatabase(const char* name);
 Database createTable(Database db, const char* name);
 void insertRow(Table* table, Row row);
 void printTable(Table table);
+void dropDB(Database* db);
+void dropTable(Table* table);
+void deleteRow(Table* table, int row_id);

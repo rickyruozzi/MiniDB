@@ -49,7 +49,6 @@ typedef struct schema {
 } schema;
 
 
-
 Database createDatabase(const char* name);
 Database createTable(Database db, const char* name);
 void insertRow(Table* table, Row row);
@@ -62,3 +61,6 @@ bool isTableEmpty(Table *table);
 bool isPageFull(Page *page);
 void updateRow(Table* table, int id, Row* new_Row);
 schema* create_schema(const char* name);
+schema* add_column(schema *s, const char column_name[32], fieldType type);
+void print_schema(schema s);
+void delete_column(schema *s, const char column_name[32]);

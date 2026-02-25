@@ -128,14 +128,56 @@ void updateRow(Table* table, int id, Row *new_row){
     }
 }
 
-schema create_schema(const char* schema_name){
-    schema s;
-    strncpy(s.name, schema_name, sizeof(s.name) - 1);
-    s.name[sizeof(s.name) - 1] = "\0";
-    s.columns = NULL;
-    s.column_number = 0;
+schema* create_schema(const char* schema_name){
+    schema* s = (schema*)malloc(sizeof(schema));
+    strncpy(s->name, schema_name, sizeof(s->name) - 1);
+    s->name[sizeof(s->name) - 1] = '\0';
+    s->columns = NULL;
+    s->column_number = 0;
     return s;
 }
+
+schema* add_column(schema *s, const char *name, fieldType type){
+    s->column_number++;
+    s->columns = realloc(s->columns, s->column_number * sizeof(column));
+    if(s->columns == NULL){
+        fprintf(stderr, "Impossibile creare la colonna\n");
+        exit(EXIT_FAILURE);
+    }
+    column *new_column = &s->columns + s->column_number - 1;
+    strncpy(new_column->name, name, sizeof(new_column->name) - 1);
+    new_column->name[sizeof(new_column->name) - 1] = '\0';
+    new_column->field=type;
+    return s;
+}
+
+void print_schema(schema s){
+    printf('schema name: %s\n', s.name);
+    printf("column number: %d\n", s.column_number);
+    for(int i=0; i<s.column_number; i++){
+        printf("column name: %s\n", s.columns[i].name);
+        printf("field type: %d\n", s.columns[i].field);
+    }
+}
+
+void delete_column(schema *s, const char *name){
+    for(int i=0; i<s->column_number; i++){
+        if(strcmp(s->columns[i].name, name) == 0){
+            for(int j=i; j<s->column_number - 1; j++){
+                s->columns[j] = s->columns[j+1];
+            }
+            s->column_number--;
+            s->columns = realloc(s->columns, s->column_number * sizeof(column));
+            if(s->columns == NULL && s->column_number > 0){
+                fprintf(stderr, "Impossibile eliminare la colonna\n");
+                exit(EXIT_FAILURE);
+            }
+            printf("Colonna eliminata\n");
+            return;
+        }
+    }
+}
+
 
 int main(){
     //TESTS

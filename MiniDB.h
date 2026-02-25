@@ -30,6 +30,26 @@ typedef struct Database{
     int table_number;
 } Database;
 
+typedef enum {
+    INT,
+    STRING, 
+    FLOAT,
+    BOOL
+} fieldType;
+
+typedef struct column {
+    char name[32];
+    fieldType field;
+} column;
+
+typedef struct schema {
+    char name[32];
+    column* columns;
+    int column_number;
+} schema;
+
+
+
 Database createDatabase(const char* name);
 Database createTable(Database db, const char* name);
 void insertRow(Table* table, Row row);
@@ -41,4 +61,4 @@ void describeDB(Database *db);
 bool isTableEmpty(Table *table);
 bool isPageFull(Page *page);
 void updateRow(Table* table, int id, Row* new_Row);
-void clearTable(Table* table);
+schema* create_schema(const char* name);

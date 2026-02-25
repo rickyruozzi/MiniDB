@@ -128,6 +128,14 @@ void updateRow(Table* table, int id, Row *new_row){
     }
 }
 
+schema create_schema(const char* schema_name){
+    schema s;
+    strncpy(s.name, schema_name, sizeof(s.name) - 1);
+    s.name[sizeof(s.name) - 1] = "\0";
+    s.columns = NULL;
+    s.column_number = 0;
+    return s;
+}
 
 int main(){
     //TESTS

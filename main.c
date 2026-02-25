@@ -144,7 +144,7 @@ schema* add_column(schema *s, const char *name, fieldType type){
         fprintf(stderr, "Impossibile creare la colonna\n");
         exit(EXIT_FAILURE);
     }
-    column *new_column = &s->columns + s->column_number - 1;
+    column *new_column = s->columns + s->column_number - 1;
     strncpy(new_column->name, name, sizeof(new_column->name) - 1);
     new_column->name[sizeof(new_column->name) - 1] = '\0';
     new_column->field=type;
@@ -152,7 +152,7 @@ schema* add_column(schema *s, const char *name, fieldType type){
 }
 
 void print_schema(schema s){
-    printf('schema name: %s\n', s.name);
+    printf("schema name: %s\n", s.name);
     printf("column number: %d\n", s.column_number);
     for(int i=0; i<s.column_number; i++){
         printf("column name: %s\n", s.columns[i].name);

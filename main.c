@@ -180,7 +180,8 @@ void delete_column(schema *s, const char *name){
 
 
 int main(){
-    //TESTS
+    //TEST 1: Database e Tabelle
+    printf("===== TEST 1: Database e Tabelle =====\n\n");
     Database db = createDatabase("my_database");
     db = createTable(db, "users");
     Row row1 = {1, "Alice", "Rossi", "AliRossi@gmail.com", 22};
@@ -202,5 +203,19 @@ int main(){
     new_row->email[sizeof(new_row->email) - 1] = '\0';
     updateRow(&db.tables[0], 2, new_row);
     printTable(db.tables[0]);
+    
+    //TEST 2: Schema e Colonne
+    printf("\n===== TEST 2: Schema e Colonne =====\n\n");
+    schema* s = create_schema("user_schema");
+    s = add_column(s, "id", INT);
+    s = add_column(s, "name", STRING);
+    s = add_column(s, "email", STRING);
+    print_schema(*s);
+    printf("\nEliminando colonna 'email'...\n");
+    delete_column(s, "email");
+    print_schema(*s);
+    free(s->columns);
+    free(s);
+    free(new_row);
     return 0;
 }
